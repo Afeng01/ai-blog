@@ -4,7 +4,7 @@ const postsContainer = document.getElementById('posts-list');
 // 从 GitHub API 获取文章列表
 async function fetchPosts() {
     try {
-        const response = await fetch('https://api.github.com/repos/[YOUR_GITHUB_USERNAME]/ai-blog/contents/posts');
+        const response = await fetch('https://api.github.com/repos/Afeng01/ai-blog/contents/posts');
         const files = await response.json();
         
         // 过滤出 .md 文件并按日期排序
