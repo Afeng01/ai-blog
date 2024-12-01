@@ -1,17 +1,18 @@
 // 获取文章列表容器
 const postsContainer = document.getElementById('posts-list');
 
-// 从 GitHub API 获取文章列表
+// 文章列表配置
+const posts = [
+    {
+        date: '20240101',
+        title: 'ChatGPT使用技巧',
+        path: 'posts/20240101-ChatGPT使用技巧.md'
+    }
+];
+
+// 获取文章列表
 async function fetchPosts() {
     try {
-        const response = await fetch('https://api.github.com/repos/Afeng01/ai-blog/contents/posts');
-        const files = await response.json();
-        
-        // 过滤出 .md 文件并按日期排序
-        const posts = files
-            .filter(file => file.name.endsWith('.md'))
-            .sort((a, b) => b.name.localeCompare(a.name));
-
         // 显示文章列表
         displayPosts(posts);
     } catch (error) {
@@ -25,26 +26,22 @@ function displayPosts(posts) {
     posts.forEach(async post => {
         try {
             // 获取文章内容
-            const response = await fetch(post.download_url);
+            const response = await fetch(post.path);
             const content = await response.text();
-            
-            // 解析文件名中的日期和标题
-            const [date, ...titleParts] = post.name.replace('.md', '').split('-');
-            const title = titleParts.join(' ');
             
             // 创建文章预览
             const postElement = document.createElement('article');
             postElement.className = 'post-item';
             postElement.innerHTML = `
-                <h2><a href="#" class="post-title">${title}</a></h2>
-                <div class="post-date">${formatDate(date)}</div>
+                <h2><a href="#" class="post-title">${post.title}</a></h2>
+                <div class="post-date">${formatDate(post.date)}</div>
                 <div class="post-preview">${marked(content.slice(0, 200))}...</div>
             `;
             
             // 添加点击事件
             postElement.querySelector('.post-title').addEventListener('click', (e) => {
                 e.preventDefault();
-                displayFullPost(content, title, date);
+                displayFullPost(content, post.title, post.date);
             });
             
             postsContainer.appendChild(postElement);
